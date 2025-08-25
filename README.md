@@ -1,22 +1,64 @@
-tore Rating Application
-A full-stack web application that allows users to submit ratings for stores with role-based access control.
-Tech Stack
-Backend:
+# Store Rating Platform
 
-Express.js
-PostgreSQL
-bcryptjs (password hashing)
-JWT (authentication)
-cors (cross-origin requests)
+A comprehensive full-stack web application that allows users to submit and manage ratings for stores with role-based access control. The platform supports three user types: System Administrators, Normal Users, and Store Owners, each with specific functionalities and access levels.
 
-Frontend:
+## Table of Contents
 
-React + Vite
-Tailwind CSS
-Axios (API calls)
-React Router (routing)
+- [Tech Stack](#tech-stack)
+- [Features](#features)
+- [Project Structure](#project-structure)
+- [Installation & Setup](#installation--setup)
+- [API Endpoints](#api-endpoints)
+- [Form Validations](#form-validations)
+- [User Roles & Permissions](#user-roles--permissions)
+- [Database Schema](#database-schema)
+- [Security Features](#security-features)
+- [Development](#development)
+- [Contributing](#contributing)
+- [License](#license)
 
-Project Structure
+## Tech Stack
+
+### Backend
+- **Express.js** - Web application framework
+- **PostgreSQL** - Database management system
+- **bcryptjs** - Password hashing
+- **JWT (jsonwebtoken)** - Authentication tokens
+- **cors** - Cross-origin resource sharing
+- **dotenv** - Environment variable management
+
+### Frontend
+- **React** - JavaScript library for building user interfaces
+- **Vite** - Build tool and development server
+- **Tailwind CSS** - Utility-first CSS framework
+- **Axios** - HTTP client for API calls
+- **React Router** - Client-side routing
+
+## Features
+
+### System Administrator
+- 📊 Dashboard with comprehensive statistics
+- 👥 User management (create, view, filter, delete)
+- 🏪 Store management with owner assignment
+- ⭐ Rating analytics and distribution
+- 📈 System-wide performance metrics
+
+### Normal User
+- 🔐 User registration and secure login
+- 🔍 Store browsing with search and filters
+- ⭐ Rating submission and modification
+- 📝 Personal rating history tracking
+- 🔒 Password update functionality
+
+### Store Owner
+- 🏪 Store-specific dashboard
+- 📊 Customer rating analytics
+- 📈 Store performance metrics
+- 🔒 Secure authentication and password management
+
+## Project Structure
+
+```
 store-rating-app/
 ├── backend/
 │   ├── config/
@@ -73,256 +115,280 @@ store-rating-app/
 │   ├── vite.config.js
 │   └── tailwind.config.js
 └── README.md
-Installation & Setup
-Prerequisites
+```
 
-Node.js (v16 or higher)
-PostgreSQL (v12 or higher)
+## Installation & Setup
 
-PostgreSQL Setup
+### Prerequisites
 
-Install PostgreSQL:
+Before you begin, ensure you have the following installed:
+- **Node.js** (v16 or higher)
+- **PostgreSQL** (v12 or higher)
+- **npm** (comes with Node.js)
 
-Windows: Download from https://www.postgresql.org/download/windows/
-macOS: brew install postgresql
-Ubuntu: sudo apt-get install postgresql postgresql-contrib
+### PostgreSQL Setup
 
+1. **Install PostgreSQL:**
+   - **Windows:** Download from [https://www.postgresql.org/download/windows/](https://www.postgresql.org/download/windows/)
+   - **macOS:** `brew install postgresql`
+   - **Ubuntu:** `sudo apt-get install postgresql postgresql-contrib`
 
-Start PostgreSQL service:
+2. **Start PostgreSQL service:**
+   - **Windows:** Use pgAdmin or start from services
+   - **macOS:** `brew services start postgresql`
+   - **Ubuntu:** `sudo systemctl start postgresql`
 
-Windows: Use pgAdmin or start from services
-macOS: brew services start postgresql
-Ubuntu: sudo systemctl start postgresql
+3. **Create Database:**
+   ```bash
+   # Access PostgreSQL prompt
+   sudo -u postgres psql
 
+   # Create database and user
+   CREATE DATABASE store_rating_db;
+   CREATE USER store_user WITH PASSWORD 'your_password';
+   GRANT ALL PRIVILEGES ON DATABASE store_rating_db TO store_user;
+   \q
+   ```
 
-Create Database:
-bash# Access PostgreSQL prompt
-sudo -u postgres psql
+### Backend Setup
 
-# Create database and user
-CREATE DATABASE store_rating_db;
-CREATE USER store_user WITH PASSWORD 'your_password';
-GRANT ALL PRIVILEGES ON DATABASE store_rating_db TO store_user;
-\q
+1. **Navigate to backend directory:**
+   ```bash
+   cd backend
+   ```
 
+2. **Install dependencies:**
+   ```bash
+   npm init -y
+   npm install express pg bcryptjs jsonwebtoken cors dotenv
+   npm install -D nodemon
+   ```
 
-Backend Setup
+3. **Create .env file:**
+   ```env
+   PORT=5000
+   DB_HOST=localhost
+   DB_PORT=5432
+   DB_NAME=store_rating_db
+   DB_USER=store_user
+   DB_PASSWORD=your_password
+   JWT_SECRET=your-super-secret-jwt-key-here
+   NODE_ENV=development
+   ```
 
-Navigate to backend directory:
-bashcd backend
+4. **Setup database tables:**
+   ```bash
+   # Connect to your database and run the SQL from models/schema.sql
+   psql -U store_user -d store_rating_db -f models/schema.sql
+   ```
 
-Install dependencies:
-bashnpm init -y
-npm install express pg bcryptjs jsonwebtoken cors dotenv
-npm install -D nodemon
+5. **Start backend server:**
+   ```bash
+   npm run dev
+   ```
 
-Create .env file:
-envPORT=5000
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=store_rating_db
-DB_USER=store_user
-DB_PASSWORD=your_password
-JWT_SECRET=your-super-secret-jwt-key-here
-NODE_ENV=development
+### Frontend Setup
 
-Setup database tables:
-bash# Connect to your database and run the SQL from models/schema.sql
-psql -U store_user -d store_rating_db -f models/schema.sql
+1. **Navigate to frontend directory:**
+   ```bash
+   cd frontend
+   ```
 
-Start backend server:
-bashnpm run dev
+2. **Create Vite React app:**
+   ```bash
+   npm create vite@latest . -- --template react
+   npm install
+   ```
 
+3. **Install additional dependencies:**
+   ```bash
+   npm install axios react-router-dom
+   npm install -D tailwindcss postcss autoprefixer
+   npx tailwindcss init -p
+   ```
 
-Frontend Setup
+4. **Start frontend development server:**
+   ```bash
+   npm run dev
+   ```
 
-Navigate to frontend directory:
-bashcd frontend
+### Default Admin Account
 
-Create Vite React app:
-bashnpm create vite@latest . -- --template react
-npm install
-
-Install additional dependencies:
-bashnpm install axios react-router-dom
-npm install -D tailwindcss postcss autoprefixer
-npx tailwindcss init -p
-
-Start frontend development server:
-bashnpm run dev
-
-
-Default Admin Account
 After running the database schema, a default system administrator account will be created:
 
-Email: admin@system.com
-Password: Admin123!
-Role: system_admin
+- **Email:** `admin@system.com`
+- **Password:** `Admin123!`
+- **Role:** `system_admin`
 
-API Endpoints
-Authentication
+## API Endpoints
 
-POST /api/auth/login - User login
-POST /api/auth/register - User registration
+### Authentication
+- `POST /api/auth/login` - User login
+- `POST /api/auth/register` - User registration
 
-Users
+### Users
+- `GET /api/users` - Get all users (Admin only)
+- `POST /api/users` - Create user (Admin only)
+- `PUT /api/users/password` - Update password
+- `GET /api/users/stats` - Get user statistics (Admin only)
 
-GET /api/users - Get all users (Admin only)
-POST /api/users - Create user (Admin only)
-PUT /api/users/password - Update password
-GET /api/users/stats - Get user statistics (Admin only)
+### Stores
+- `GET /api/stores` - Get all stores
+- `POST /api/stores` - Create store (Admin only)
+- `GET /api/stores/stats` - Get store statistics (Admin only)
 
-Stores
+### Ratings
+- `GET /api/ratings` - Get all ratings
+- `POST /api/ratings` - Submit rating
+- `PUT /api/ratings/:id` - Update rating
+- `GET /api/ratings/stats` - Get rating statistics (Admin only)
 
-GET /api/stores - Get all stores
-POST /api/stores - Create store (Admin only)
-GET /api/stores/stats - Get store statistics (Admin only)
+## Form Validations
 
-Ratings
+The application enforces the following validation rules:
 
-GET /api/ratings - Get all ratings
-POST /api/ratings - Submit rating
-PUT /api/ratings/:id - Update rating
-GET /api/ratings/stats - Get rating statistics (Admin only)
+- **Name:** 20-60 characters
+- **Address:** Maximum 400 characters
+- **Password:** 8-16 characters, must include at least one uppercase letter and one special character
+- **Email:** Standard email format validation
+- **Rating:** Integer between 1-5
 
-Form Validations
+## User Roles & Permissions
 
-Name: 20-60 characters
-Address: Max 400 characters
-Password: 8-16 characters, at least one uppercase letter and one special character
-Email: Standard email validation
-Rating: Integer between 1-5
+### System Administrator (`system_admin`)
+- Full access to all system features
+- Can create and manage users
+- Can create and manage stores
+- Can view all ratings and analytics
+- Access to system-wide statistics
 
-Features
-System Administrator
+### Normal User (`normal_user`)
+- Can register and login
+- Can view and search stores
+- Can submit and modify their own ratings
+- Can update their password
+- Limited to their own data
 
-Dashboard with statistics
-User management (create, view, filter)
-Store management
-View all ratings and users
+### Store Owner (`store_owner`)
+- Can login to the system
+- Can view ratings for their assigned stores
+- Can access store-specific analytics
+- Can update their password
+- Limited to their store's data
 
-Normal User
+## Database Schema
 
-Registration and login
-View and search stores
-Submit and modify ratings
-Update password
+The application uses PostgreSQL with the following main tables:
 
-Store Owner
+### Users Table
+- Stores user information including credentials and roles
+- Password hashing with bcrypt
+- Timestamps for creation and updates
 
-Login access
-View store ratings and statistics
-Update password
+### Stores Table
+- Store information and owner assignments
+- Address and contact details
+- Relationship with users (owners)
 
-Development
-Backend Scripts
-json{
+### Ratings Table
+- User ratings for stores
+- Rating values (1-5 scale)
+- Timestamps and user associations
+
+### Key Relationships
+- Users → Stores (one-to-many for store ownership)
+- Users → Ratings (one-to-many for user ratings)
+- Stores → Ratings (one-to-many for store ratings)
+
+## Security Features
+
+- **JWT Token-based Authentication** - Secure token management with expiration
+- **Password Hashing** - bcrypt for secure password storage
+- **Role-based Access Control** - Endpoint protection based on user roles
+- **Input Validation** - Server-side and client-side validation
+- **SQL Injection Prevention** - Parameterized queries
+- **CORS Protection** - Cross-origin request handling
+- **Input Sanitization** - Data cleaning and validation
+
+## Development
+
+### Backend Scripts
+```json
+{
   "start": "node server.js",
   "dev": "nodemon server.js"
 }
-Frontend Scripts
-json{
+```
+
+### Frontend Scripts
+```json
+{
   "dev": "vite",
   "build": "vite build",
   "preview": "vite preview"
 }
-Database Schema
-The application uses PostgreSQL with the following main tables:
+```
 
-users - Store user information and roles
-stores - Store information
-ratings - Store user ratings for stores
+### Running the Application
 
-Security Features
+1. **Start the backend server:**
+   ```bash
+   cd backend
+   npm run dev
+   ```
+   Backend will be available at: `http://localhost:5000`
 
-JWT token-based authentication
-Password hashing with bcrypt
-Role-based access control
-Input validation and sanitization
-CORS protection
+2. **Start the frontend development server:**
+   ```bash
+   cd frontend
+   npm run dev
+   ```
+   Frontend will be available at: `http://localhost:5173`
 
-Contributing
+### Environment Configuration
 
-Fork the repository
-Create a feature branch
-Commit your changes
-Push to the branch
-Create a Pull Request
+Make sure to configure your environment variables properly:
 
-License
-This project is licensed under the MIT License.
+- Update database credentials in the backend `.env` file
+- Set a secure JWT secret key
+- Configure CORS settings for production deployment
 
-🎯 Complete Full-Stack Application
-Backend (Express.js + PostgreSQL)
-✅ Database Schema - Complete PostgreSQL schema with users, stores, and ratings tables
-✅ Authentication System - JWT-based auth with bcrypt password hashing
-✅ Role-Based Access Control - System Admin, Normal User, Store Owner roles
-✅ API Controllers - Full CRUD operations for all entities
-✅ Validation Middleware - Server-side validation with proper error handling
-✅ Security Features - CORS, input sanitization, SQL injection prevention
-Frontend (React + Vite + Tailwind CSS)
-✅ Authentication Context - Complete auth state management
-✅ Role-Based Routing - Different dashboards per user role
-✅ Responsive UI - Modern design with Tailwind CSS
-✅ Form Validation - Client-side validation with real-time feedback
-✅ API Integration - Axios-based API service with error handling
-🚀 Key Features Implemented
-System Administrator
+## Contributing
 
-Dashboard with comprehensive statistics
-User management (create, view, filter, delete)
-Store management with owner assignment
-Rating analytics and distribution charts
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-Normal User
+### Development Guidelines
 
-User registration and login
-Store browsing with search and filters
-Rating submission and modification
-Personal rating history
+- Follow the existing code structure and naming conventions
+- Add proper error handling and validation
+- Write meaningful commit messages
+- Test your changes thoroughly
+- Update documentation as needed
 
-Store Owner
+## License
 
-Store-specific dashboard
-Customer rating analytics
-Store performance metrics
+This project is licensed under the MIT License. See the `LICENSE` file for details.
 
-📁 Complete File Structure
-I've provided all necessary files with proper code:
+---
 
-Backend: 15+ files (controllers, middleware, routes, models, config)
-Frontend: 15+ files (components, pages, context, services, utils)
-Configuration files for both environments
-Comprehensive README with step-by-step setup
+## Quick Start Summary
 
-🔐 Security & Validation
+1. **Clone the repository**
+2. **Setup PostgreSQL database**
+3. **Configure backend environment variables**
+4. **Install backend dependencies and start server**
+5. **Install frontend dependencies and start development server**
+6. **Access the application at `http://localhost:5173`**
+7. **Login with default admin credentials: `admin@system.com` / `Admin123!`**
 
-Password requirements: 8-16 chars, uppercase + special character
-Name validation: 20-60 characters
-Address validation: max 400 characters
-JWT token authentication with refresh capability
-Role-based API endpoint protection
+For detailed setup instructions, refer to the [Installation & Setup](#installation--setup) section above.
 
-📊 Database Features
+## Support
 
-PostgreSQL with proper relationships and constraints
-Default admin account (admin@system.com / Admin123!)
-Database views for statistics
-Automatic timestamp updates
-Cascade delete operations
+For any issues or questions, please create an issue in the repository or contact the development team.
 
-🛠 Setup Instructions
-The README includes detailed setup instructions for:
-
-PostgreSQL installation and configuration
-Backend setup with all dependencies
-Frontend setup with Vite and Tailwind
-Environment variable configuration
-Database schema installation
-Troubleshooting guide
-
-You now have a production-ready store rating application that meets all your requirements! The application includes proper error handling, loading states, responsive design, and follows best practices for both frontend and backend development.
-To get started, simply follow the step-by-step instructions in the README file. The application will be running on:
-
-Backend: http://localhost:5000
-Frontend: http://localhost:5173# Store-rating-platform
+**Happy coding! 🚀**
