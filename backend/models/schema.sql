@@ -92,3 +92,45 @@ SELECT
     (SELECT COUNT(*) FROM users) as total_users_count,
     (SELECT COUNT(*) FROM stores) as total_stores_count,
     (SELECT COUNT(*) FROM ratings) as total_ratings_count;
+
+    -- ==============================
+-- SEED DATA
+-- ==============================
+
+-- Insert system admin
+INSERT INTO users (name, email, password, address, role) VALUES
+('System Administrator User', 'admin@system.com',
+ '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/VGOxUQJ6P7QJjEUCS',
+ '123 Admin Street, Admin City, Admin State', 'system_admin');
+
+-- Insert normal users
+INSERT INTO users (name, email, password, address, role) VALUES
+('Normal User One', 'user1@example.com',
+ '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/VGOxUQJ6P7QJjEUCS',
+ '456 User Lane, Delhi, India', 'normal_user'),
+('Normal User Two', 'user2@example.com',
+ '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/VGOxUQJ6P7QJjEUCS',
+ '789 User Street, Mumbai, India', 'normal_user');
+
+-- Insert store owners
+INSERT INTO users (name, email, password, address, role) VALUES
+('Store Owner One', 'owner1@example.com',
+ '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/VGOxUQJ6P7QJjEUCS',
+ '101 Store Road, Bangalore, India', 'store_owner'),
+('Store Owner Two', 'owner2@example.com',
+ '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/VGOxUQJ6P7QJjEUCS',
+ '202 Market Lane, Hyderabad, India', 'store_owner');
+
+-- Insert stores
+INSERT INTO stores (name, email, address, owner_id) VALUES
+('Best Electronics and Home Appliances Store', 'store1@example.com',
+ '11 MG Road, Bangalore, India', 4),
+('Fresh Groceries and Daily Essentials Shop', 'store2@example.com',
+ '22 Brigade Road, Hyderabad, India', 5);
+
+-- Insert ratings
+INSERT INTO ratings (user_id, store_id, rating) VALUES
+(2, 1, 5),  -- User1 rates Store1
+(2, 2, 4),  -- User1 rates Store2
+(3, 1, 3),  -- User2 rates Store1
+(3, 2, 5);  -- User2 rates Store2
